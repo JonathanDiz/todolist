@@ -1,0 +1,18 @@
+CREATE DATABASE todolist;
+
+--\c todolist;
+
+CREATE TABLE users(
+  id BIGSERIAL PRIMARY KEY NOT NULL,
+  usuario VARCHAR(255) NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  UNIQUE(email)
+);
+
+CREATE TABLE tareas(
+  id BIGSERIAL PRIMARY KEY NOT NULL,
+  tarea VARCHAR(255) NOT NULL,
+  estado VARCHAR(255) NOT NULL
+);
