@@ -172,6 +172,31 @@ server.post(
   })
 );
 
+server.post("/users/register", (req, res) => {
+  // Access form data
+  const { usuario, nombre, correo, password } = req.body;
+  
+  // Hash the password
+  const salt = bcrypt.genSaltSync(10);
+  const hash = bcrypt.hashSync(password, salt);
+  
+  // Insert data into the database
+  pool.query(
+    `INSERT INTO users (username, name, email, password) VALUES ($1, $2, $3, $4)`,
+    [usuario, nombre, correo, hash],
+    (err, result) => {
+      if (err) {
+        req.flash("error_msg", "Error al registrar usuario");
+        res.redirect("/users/register");
+        return;
+      }
+      req.flash("success_msg", "Usuario registrado correctamente");
+      res.redirect("/users/login");
+    }
+  );
+});
+
+
 app.prepare().then(() => {
   server.get("/p/:id", (req, res) => {
     const actualPage = "/post";
