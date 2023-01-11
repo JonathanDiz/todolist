@@ -45,13 +45,13 @@ server.use(function (err, req, res, next) {
 
 server.use(
   session({
-    secret: process.env.SESSION_SECRET || "secret",
+    secret: process.env.SESSION_SECRET || "IntoDarken007+_+007+_+",
     resave: false,
     saveUninitialized: false,
   })
 );
-server.use(flash());
 server.use(express.static("assets"));
+server.use(flash());
 server.use(passport.initialize());
 server.use(passport.session());
 
@@ -182,7 +182,7 @@ server.post("/users/register", (req, res) => {
   
   // Insert data into the database
   pool.query(
-    `INSERT INTO users (username, name, email, password) VALUES ($1, $2, $3, $4)`,
+    `INSERT INTO users (username, name, email, password) VALUES ($1, $2, $3, $4) RETURNING email, password`,
     [usuario, nombre, correo, hash],
     (err, result) => {
       if (err) {
