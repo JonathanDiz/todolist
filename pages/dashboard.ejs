@@ -1,41 +1,16 @@
 <!DOCTYPE html>
-<html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="stylesheet"
-      href="https://necolas.github.io/normalize.css/8.0.1/normalize.css"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="styles.css">
-    <title>Dashboard</title>
-  </head>
-  <body>
-    <main>
-      <a href="/users/logout">Cerrar sesión</a>
-      <h1>Bienvenido <%= user.charAt(0).toUpperCase() + user.slice(1) %></h1>
-      <div class="container">
-        <h2>Lista de tareas</h2>
-        <div class="search">
-          <form>
-            <input type="text" placeholder="Agregar tarea...">
-            <button class="btn-add">+</button>
-          </form>
-        </div>
-        <div class="li-container">
-          <ul>
-
-          </ul>
-        </div>
-        <div class="empty">
-          <p>No tienes tareas pendientes.</p>
-        </div>
-      </div>
-    </main>
-  </body>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+</head>
+<body>
+<ul>
+  <% for(let i = 0; i < files.length; i++) { %>
+    <li><%= files[i] %></li>
+  <% } %>
+</ul>
+</body>
 </html>

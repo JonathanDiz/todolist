@@ -7,6 +7,7 @@ const passport = require("passport");
 const inizializePassport = require("./passportConfig");
 const { pool } = require("./dbConfig");
 const helmet = require("helmet");
+const fs = require("fs");
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -57,18 +58,50 @@ server.use(passport.session());
 // Routes
 server.get("/", (req, res) => {
   res.render("index");
+  const dir = "./views";
+    fs.readdir(dir, (err, files) => {
+        if (err) {
+            console.error("No se pudo leer el directorio: ", err);
+            return res.status(500).send("Ocurrió un error al intentar leer el directorio.");
+        }
+        res.render("index", { files });
+    });
 });
 
 server.get("/users/register", (req, res) => {
   res.render("register");
+  const dir = "./views";
+    fs.readdir(dir, (err, files) => {
+        if (err) {
+            console.error("No se pudo leer el directorio: ", err);
+            return res.status(500).send("Ocurrió un error al intentar leer el directorio.");
+        }
+        res.render("register", { files });
+    });
 });
 
 server.get("/users/login", checkAuthenticated, (req, res) => {
   res.render("login");
+  const dir = "./views";
+    fs.readdir(dir, (err, files) => {
+        if (err) {
+            console.error("No se pudo leer el directorio: ", err);
+            return res.status(500).send("Ocurrió un error al intentar leer el directorio.");
+        }
+        res.render("login", { files });
+    });
 });
 
 server.get("/dashboard", checkNotAuthenticated, (req, res) => {
   res.render("dashboard", { user: req.user });
+  const dir = "./views";
+    fs.readdir(dir, (err, files) => {
+        if (err) {
+            console.error("No se pudo leer el directorio: ", err);
+            return res.status(500).send("Ocurrió un error al intentar leer el directorio.");
+        }
+        res.render("dashboard", { files });
+    });
 });
 
 server.get("/users/logout", checkAuthenticated, (req, res) => {
