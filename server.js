@@ -19,11 +19,27 @@ inizializePassport(passport);
 
 const server = express();
 
+// control de errores
+process.on("uncaughtException", (err) => {
+  console.error("Excepción no capturada: ", err);
+  process.exit(1);
+});
+
+process.on("unhandledRejection", (err) => {
+  console.error("Promesa rechazada no capturada: ", err);
+  process.exit(1);
+});
+
 // Middlewares
 server.use(helmet());
 server.use(express.json());
 server.use(express.urlencoded({ extended: false }));
 server.set("view engine", "ejs");
+server.use(function (err, req, res, next) {
+  console.error(err.stack);
+  req.flash("error_msg", "Ha ocurrido un error inesperado.");
+  res.redirect("/");
+});
 
 server.use(
   session({
@@ -39,19 +55,19 @@ server.use(passport.session());
 
 // Routes
 server.get("/", (req, res) => {
-  return res.render("index");
+  res.render("index");
 });
 
 server.get("/users/register", (req, res) => {
-  return res.render("register");
+  res.render("register");
 });
 
 server.get("/users/login", checkAuthenticated, (req, res) => {
-  return res.render("login");
+  res.render("login");
 });
 
 server.get("/dashboard", checkNotAuthenticated, (req, res) => {
-  return res.render("dashboard", { user: req.user });
+  res.render("dashboard", { user: req.user });
 });
 
 server.get("/users/logout", checkAuthenticated, (req, res) => {
