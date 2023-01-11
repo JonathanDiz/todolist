@@ -36,7 +36,7 @@ server.use(helmet());
 server.use(express.json());
 server.use(express.urlencoded({ extended: false }));
 server.set("view engine", "ejs");
-server.use(express.static('path/to/public'));
+server.use(express.static("path/to/public"));
 server.use(function (err, req, res, next) {
   console.error(err.stack);
   req.flash("error_msg", "Ha ocurrido un error inesperado.");
@@ -45,7 +45,7 @@ server.use(function (err, req, res, next) {
 
 server.use(
   session({
-    secret: process.env.SESSION_SECRET || "IntoDarken007+_+007+_+",
+    secret: "secret",
     resave: false,
     saveUninitialized: false,
   })
@@ -62,55 +62,64 @@ server.get("/view/:file", (req, res) => {
   fs.readFile(file, "utf8", (err, data) => {
     if (err) {
       console.error("No se pudo leer el archivo: ", err);
-      return res.status(500).send("Ocurrió un error al intentar leer el archivo.");
+      return res
+        .status(500)
+        .send("Ocurrió un error al intentar leer el archivo.");
     }
     res.render("view", { content: data, file });
   });
 });
 
-
 server.get("/", (req, res) => {
   const dir = "./views";
-    fs.readdir(dir, (err, files) => {
-        if (err) {
-            console.error("No se pudo leer el directorio: ", err);
-            return res.status(500).send("Ocurrió un error al intentar leer el directorio.");
-        }
-        res.render("index", { files });
-    });
+  fs.readdir(dir, (err, files) => {
+    if (err) {
+      console.error("No se pudo leer el directorio: ", err);
+      return res
+        .status(500)
+        .send("Ocurrió un error al intentar leer el directorio.");
+    }
+    res.render("index", { files });
+  });
 });
 
 server.get("/users/register", (req, res) => {
   const dir = "./views";
-    fs.readdir(dir, (err, files) => {
-        if (err) {
-            console.error("No se pudo leer el directorio: ", err);
-            return res.status(500).send("Ocurrió un error al intentar leer el directorio.");
-        }
-        res.render("register", { files });
-    });
+  fs.readdir(dir, (err, files) => {
+    if (err) {
+      console.error("No se pudo leer el directorio: ", err);
+      return res
+        .status(500)
+        .send("Ocurrió un error al intentar leer el directorio.");
+    }
+    res.render("register", { files });
+  });
 });
 
 server.get("/users/login", checkAuthenticated, (req, res) => {
   const dir = "./views";
-    fs.readdir(dir, (err, files) => {
-        if (err) {
-            console.error("No se pudo leer el directorio: ", err);
-            return res.status(500).send("Ocurrió un error al intentar leer el directorio.");
-        }
-        res.render("login", { files });
-    });
+  fs.readdir(dir, (err, files) => {
+    if (err) {
+      console.error("No se pudo leer el directorio: ", err);
+      return res
+        .status(500)
+        .send("Ocurrió un error al intentar leer el directorio.");
+    }
+    res.render("login", { files });
+  });
 });
 
 server.get("/dashboard", checkNotAuthenticated, (req, res) => {
   const dir = "./views";
-    fs.readdir(dir, (err, files) => {
-        if (err) {
-            console.error("No se pudo leer el directorio: ", err);
-            return res.status(500).send("Ocurrió un error al intentar leer el directorio.");
-        }
-        res.render("dashboard", { files });
-    });
+  fs.readdir(dir, (err, files) => {
+    if (err) {
+      console.error("No se pudo leer el directorio: ", err);
+      return res
+        .status(500)
+        .send("Ocurrió un error al intentar leer el directorio.");
+    }
+    res.render("dashboard", { files });
+  });
 });
 
 server.get("/users/logout", checkAuthenticated, (req, res) => {
@@ -171,27 +180,46 @@ server.post(
 server.post("/users/register", (req, res) => {
   // Access form data
   const { usuario, nombre, correo, password } = req.body;
-  
+
   // Hash the password
   const salt = bcrypt.genSaltSync(10);
   const hash = bcrypt.hashSync(password, salt);
-  
+
   // Insert data into the database
   pool.query(
-    `INSERT INTO users (username, name, email, password) VALUES ($1, $2, $3, $4) RETURNING email, password`,
-    [usuario, nombre, correo, hash],
+    `SELECT * FROM users 
+      WHERE email = $1`,
+    [email],
     (err, result) => {
       if (err) {
-        req.flash("error_msg", "Error al registrar usuario");
-        res.redirect("/users/register");
-        return;
+        throw err;
       }
-      req.flash("success_msg", "Usuario registrado correctamente");
-      res.redirect("/users/login");
+      console.log(result.rows);
+      if (result.rows.length > 0) {
+        errors.push({
+          message: "El usuario ya existe, por favor inicie sesion",
+        });
+        res.render("register", { errors });
+      } else {
+        pool.query(
+          `INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id, password`,
+          [name, email, encriptPassword],
+          (err, result) => {
+            if (err) {
+              throw err;
+            }
+            console.log(result.rows);
+            req.flash(
+              "success_msg",
+              "Cuenta creada con exito, ahora puede iniciar sesion."
+            );
+            res.redirect("/users/login");
+          }
+        );
+      }
     }
   );
 });
-
 
 app.prepare().then(() => {
   server.get("/p/:id", (req, res) => {
