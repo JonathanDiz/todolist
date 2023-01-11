@@ -36,7 +36,7 @@ server.use(helmet());
 server.use(express.json());
 server.use(express.urlencoded({ extended: false }));
 server.set("view engine", "ejs");
-server.use(express.static('path/to/public'))
+server.use(express.static('path/to/public'));
 server.use(function (err, req, res, next) {
   console.error(err.stack);
   req.flash("error_msg", "Ha ocurrido un error inesperado.");
@@ -70,7 +70,6 @@ server.get("/view/:file", (req, res) => {
 
 
 server.get("/", (req, res) => {
-  res.render("index");
   const dir = "./views";
     fs.readdir(dir, (err, files) => {
         if (err) {
@@ -82,7 +81,6 @@ server.get("/", (req, res) => {
 });
 
 server.get("/users/register", (req, res) => {
-  res.render("register");
   const dir = "./views";
     fs.readdir(dir, (err, files) => {
         if (err) {
@@ -94,7 +92,6 @@ server.get("/users/register", (req, res) => {
 });
 
 server.get("/users/login", checkAuthenticated, (req, res) => {
-  res.render("login");
   const dir = "./views";
     fs.readdir(dir, (err, files) => {
         if (err) {
@@ -106,7 +103,6 @@ server.get("/users/login", checkAuthenticated, (req, res) => {
 });
 
 server.get("/dashboard", checkNotAuthenticated, (req, res) => {
-  res.render("dashboard", { user: req.user });
   const dir = "./views";
     fs.readdir(dir, (err, files) => {
         if (err) {
