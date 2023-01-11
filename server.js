@@ -56,6 +56,19 @@ server.use(passport.initialize());
 server.use(passport.session());
 
 // Routes
+
+server.get("/view/:file", (req, res) => {
+  const file = `./views/${req.params.file}`;
+  fs.readFile(file, "utf8", (err, data) => {
+    if (err) {
+      console.error("No se pudo leer el archivo: ", err);
+      return res.status(500).send("Ocurrió un error al intentar leer el archivo.");
+    }
+    res.render("view", { content: data, file });
+  });
+});
+
+
 server.get("/", (req, res) => {
   res.render("index");
   const dir = "./views";
