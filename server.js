@@ -36,7 +36,7 @@ server.use(helmet());
 server.use(express.json());
 server.use(express.urlencoded({ extended: false }));
 server.set("view engine", "ejs");
-server.use(express.static("assets"));
+server.use(express.static('path/to/public'))
 server.use(function (err, req, res, next) {
   console.error(err.stack);
   req.flash("error_msg", "Ha ocurrido un error inesperado.");
