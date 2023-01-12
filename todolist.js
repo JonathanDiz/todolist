@@ -5,11 +5,11 @@ const empty = document.querySelector("empty");
 const { Client } = require('pg');
 
 const client = new Client({
-  host: 'localhost',
-  port: 5432,
-  user: '',
-  password: 'IntoDarken007+_+007+_+',
-  database: 'todolist'
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  password: process.env.DB_PASSWORD.toString(),
+  database: process.env.DB_NAME,
 });
 
 client.connect((err) => {
