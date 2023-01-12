@@ -3,45 +3,59 @@ const { pool } = require("./dbConfig");
 const bcrypt = require("bcrypt");
 
 function inizialize(passport) {
+  const authenticateUser = (email, password, relize) => {
+    pool.query(
+      `SELECT * FROM users WHERE email = $1`,
+      [email],
+      (err, result) => {
+        if (err) {
+          throw err;
+        }
+        console.log(result.rows);
+
+        if (result.rows.length > 0) {
+          const user = result.rows[0];
+
+          bcrypt.compare(password, user.password, (err, isMatch) => {
+            if (err) {
+              throw err;
+            }
+            if (isMatch) {
+              return relize(null, user);
+            } else {
+              return relize(null, false, {
+                message: "Contraseña invalida",
+              });
+            }
+          });
+        } else {
+          return relize(null, false, {
+            message: "Correo Electrónico no registrado",
+          });
+        }
+      }
+    );
+  };
+
   passport.use(
     new LocalStrategy(
       {
         usernameField: "email",
         passwordField: "password",
-        passReqToCallback: true
       },
-      async (req, email, password, done) => {
-        try {
-          const user = await pool.query("SELECT * from users WHERE email = $1", [
-            email
-          ]);
-          if (user.rows.length === 0) {
-            return done(null, false, { message: "Correo Electrónico no registrado" });
-          }
-          const isMatch = await bcrypt.compare(password, user.rows[0].password);
-          if (!isMatch) {
-            return done(null, false, { message: "Contraseña inválida" });
-          }
-          return done(null, user.rows[0]);
-        } catch (err) {
-          done(err);
-        }
-      }
+      authenticateUser
     )
   );
+  passport.serializeUser((user, relize) => relize(null, user.id));
 
-  passport.serializeUser((user, done) => {
-    done(null, user.id);
-  });
-
-  passport.deserializeUser(async (id, done) => {
-    try {
-      const user = await pool.query("SELECT * FROM users WHERE id = $1", [id]);
-      done(null, user.rows[0]);
-    } catch (err) {
-      done(err);
-    }
+  passport.deserializeUser((id, relize) => {
+    pool.query(`SELECT * FROM users WHERE id = $1`, [id], (err, result) => {
+      if (err) {
+        throw err;
+      }
+      return relize(null, result.rows[0]);
+    });
   });
 }
 
-module.exports = inizialize
+module.exports = inizialize;

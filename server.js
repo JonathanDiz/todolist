@@ -109,8 +109,9 @@ server.get("/users/login", checkAuthenticated, (req, res) => {
   });
 });
 
-server.get("/dashboard", checkNotAuthenticated, (req, res) => {
+server.get("users/dashboard", checkNotAuthenticated, (req, res) => {
   const dir = "./views";
+  const user = req.session.username;
   fs.readdir(dir, (err, files) => {
     if (err) {
       console.error("No se pudo leer el directorio: ", err);
@@ -118,7 +119,7 @@ server.get("/dashboard", checkNotAuthenticated, (req, res) => {
         .status(500)
         .send("Ocurrió un error al intentar leer el directorio.");
     }
-    res.render("dashboard", { files });
+    res.render("dashboard", { files }, { user});
   });
 });
 
@@ -171,7 +172,7 @@ server.post("/users/register", async (req, res) => {
 server.post(
   "/users/login",
   passport.authenticate("local", {
-    successRedirect: "/dashboard",
+    successRedirect: "users/dashboard",
     failureRedirect: "/users/login",
     failureFlash: true,
   })
@@ -236,7 +237,7 @@ app.prepare().then(() => {
 
 function checkAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
-    return res.redirect("/dashboard");
+    return res.redirect("users/dashboard");
   }
   next();
 }
