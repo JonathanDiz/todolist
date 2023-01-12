@@ -109,7 +109,7 @@ server.get("/users/login", checkAuthenticated, (req, res) => {
   });
 });
 
-server.get("users/dashboard", checkNotAuthenticated, (req, res) => {
+server.get("/dashboard", checkNotAuthenticated, (req, res) => {
   const dir = "./views";
   const user = req.session.username;
   fs.readdir(dir, (err, files) => {
@@ -172,7 +172,7 @@ server.post("/users/register", async (req, res) => {
 server.post(
   "/users/login",
   passport.authenticate("local", {
-    successRedirect: "users/dashboard",
+    successRedirect: "/dashboard",
     failureRedirect: "/users/login",
     failureFlash: true,
   })
