@@ -20,6 +20,7 @@ inizializePassport(passport);
 
 const server = express();
 
+
 // control de errores
 process.on("uncaughtException", (err) => {
   console.error("Excepción no capturada: ", err);
@@ -220,6 +221,12 @@ server.post("/users/register", (req, res) => {
     }
   );
 });
+
+server.post('/users/dashboard', (req, res) => {
+  const { tarea } = req.body;
+  console.log("tarea: ", tarea);
+  console.log(req.user);
+})
 
 app.prepare().then(() => {
   server.get("/p/:id", (req, res) => {

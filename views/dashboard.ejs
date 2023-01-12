@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="../public/styles.css" />
+    <!-- <link rel="stylesheet" href="../public/styles.css" /> -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css"
@@ -12,7 +12,7 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-    <script src="/public/formulario.js" type="text/javascript"></script>
+    <!-- <script src="/public/formulario.js" type="text/javascript"></script> -->
     <title>Dashboard</title>
   </head>
   <body>
@@ -21,9 +21,10 @@
       <div class="container">
         <h2>Lista de tareas</h2>
         <div class="search">
-          <form>
-            <input type="text" placeholder="Agregar tarea..." />
-            <button class="btn-add">+</button>
+          <form action="/users/dashboard/" method="post">
+            <input  name="tarea" id="tarea" type="text" placeholder="Agregar tarea..." />
+            <!-- <button class="btn-add">+</button> -->
+            <input type="submit" value="+">
           </form>
         </div>
         <div class="li-container">
@@ -32,6 +33,21 @@
         <div class="empty">
           <p>No tienes tareas pendientes.</p>
         </div>
+          <ul>
+            <% if(typeof tareas != "undefined" ) { %>
+              <% tareas.forEach(tarea => { %>
+                <div>
+                  <input type="checkbox">
+                  <li>
+                    <%= tarea %>
+                  </li>
+                  <a href="/edit">Edit</a>
+                  <a href="/delete">Delete</a>
+                </div>
+        
+              <%}) %>
+            <% } %>
+          </ul>
       </div>
     </main>
   </body>
