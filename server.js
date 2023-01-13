@@ -1,14 +1,14 @@
-const express = require("express");
-const next = require("next");
-const bcrypt = require("bcrypt");
-const session = require("express-session");
-const flash = require("connect-flash");
-const passport = require("passport");
-const inizializePassport = require("./passportConfig");
-const { pool } = require("./dbConfig");
-const helmet = require("helmet");
-const fs = require("fs");
-const dotenv = require("dotenv");
+import express from "express";
+import next from "next";
+import bcrypt from "bcrypt";
+import session from "express-session";
+import flash from "connect-flash";
+import passport from "passport";
+import inizializePassport from "./passportConfig.js";
+import { pool } from "./dbConfig.js";
+import helmet from "helmet";
+import fs from "fs";
+import dotenv from "dotenv";
 dotenv.config();
 
 const dev = process.env.NODE_ENV !== "production";
