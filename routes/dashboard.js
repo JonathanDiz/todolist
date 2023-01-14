@@ -1,11 +1,11 @@
 import fs from 'fs';
 import express from 'express';
+import path from 'path';
 
-const server = express();
 const router = express.Router();
 
 router.get("/users/dashboard", checkNotAuthenticated, (req, res) => {
-  const dir = "../views";
+  const dir = path.join(__dirname, '..', 'views');
   fs.readdir(dir, (err, files) => {
     if (err) {
       console.error("No se pudo leer el directorio: ", err);
@@ -13,7 +13,7 @@ router.get("/users/dashboard", checkNotAuthenticated, (req, res) => {
         .status(500)
         .send("Ocurrió un error al intentar leer el directorio.");
     }
-    res.render("../views/dashboard.ejs", { files });
+    res.render("dashboard", { files });
   });
 });
 
@@ -31,6 +31,6 @@ function checkNotAuthenticated(req, res, next) {
   }
 }
 
-export default function dashboard(){
-  server.use('/users/dashboard', router);
+export default function dashboard(app){
+  app.use('/users/dashboard', router);
 };

@@ -1,11 +1,11 @@
 import fs from 'fs';
 import express from 'express';
 
-const server = express();
+
 const router = express.Router();
 
 router.get("/", (req, res) => {
-  const dir = "../views";
+  const dir = path.join(__dirname, '..', 'views');
   fs.readdir(dir, (err, files) => {
     if (err) {
       console.error("No se pudo leer el directorio: ", err);
@@ -13,10 +13,10 @@ router.get("/", (req, res) => {
         .status(500)
         .send("Ocurrió un error al intentar leer el directorio.");
     }
-    res.render("/views/index.ejs", { files });
+    res.render("index", { files });
   });
 });
 
-export default function index(){
-  server.use('/', router);
+export default function index(app){
+  app.use('/', router);
 };

@@ -5,13 +5,7 @@ import flash from "express-flash";
 import passport from "passport";
 import inizializePassport from "./passportConfig.js";
 import helmet from "helmet";
-import dashboard from "./routes/dashboard.js";
-import index from "./routes/index.js";
-import login from "./routes/login.js";
-import logout from "./routes/logout.js";
-import register from "./routes/register.js";
-import path from 'path';
-import view from "./routes/view.js";
+import path from "path";
 import dotenv from "dotenv";
 dotenv.config();
 import { URL } from "url";
@@ -22,9 +16,10 @@ const app = next({ dev });
 const handle = app.getRequestHandler();
 const PORT = process.env.PORT || 3000;
 
-inizializePassport(passport);
-
 const server = express();
+const router = express.Router();
+
+inizializePassport(passport);
 
 // control de errores
 process.on("uncaughtException", (err) => {
@@ -42,7 +37,7 @@ server.use(helmet());
 server.use(express.json());
 server.use(express.urlencoded({ extended: false }));
 server.set("view engine", "ejs");
-server.use(express.static(path.join(__dirname, 'public')));
+server.use(express.static(path.join(__dirname, "public")));
 server.use(function (err, req, res, next) {
   console.error(err.stack);
   req.flash("error_msg", "Ha ocurrido un error inesperado.");
@@ -60,13 +55,20 @@ server.use(flash());
 server.use(passport.initialize());
 server.use(passport.session());
 
-// Routes
-view();
-index();
-login();
-register();
-dashboard();
-logout();
+// Importar y aplicar rutas
+import dashboard from "./routes/dashboard.js";
+import index from "./routes/index.js";
+import login from "./routes/login.js";
+import logout from "./routes/logout.js";
+import register from "./routes/register.js";
+import view from "./routes/view.js";
+
+dashboard(router, passport);
+index(router);
+login(router, passport);
+logout(router);
+register(router);
+view(router);
 
 app.prepare().then(() => {
   server.get("/p/:id", (req, res) => {

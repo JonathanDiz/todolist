@@ -1,4 +1,4 @@
-import fs from 'fs';
+import fs from "fs";
 import bcrypt from "bcrypt";
 import { pool } from "../dbConfig.js";
 import express from "express";
@@ -15,7 +15,7 @@ router.get("/users/register", (req, res) => {
         .status(500)
         .send("Ocurrió un error al intentar leer el directorio.");
     }
-    res.render("/views/register", { files });
+    res.render("/views/register.ejs", { files });
   });
 });
 
@@ -59,50 +59,6 @@ router.post("/users/register", async (req, res) => {
   }
 });
 
-router.post("/users/register", (req, res) => {
-  // Access form data
-  const { usuario, nombre, correo, password } = req.body;
-
-  // Hash the password
-  const salt = bcrypt.genSaltSync(10);
-  const hash = bcrypt.hashSync(password, salt);
-
-  // Insert data into the database
-  pool.query(
-    `SELECT * FROM users 
-      WHERE email = $1`,
-    [email],
-    (err, result) => {
-      if (err) {
-        throw err;
-      }
-      console.log(result.rows);
-      if (result.rows.length > 0) {
-        errors.push({
-          message: "El usuario ya existe, por favor inicie sesion",
-        });
-        res.render("register", { errors });
-      } else {
-        pool.query(
-          `INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id, password`,
-          [name, email, encriptPassword],
-          (err, result) => {
-            if (err) {
-              throw err;
-            }
-            console.log(result.rows);
-            req.flash(
-              "success_msg",
-              "Cuenta creada con exito, ahora puede iniciar sesion."
-            );
-            res.redirect("/users/login");
-          }
-        );
-      }
-    }
-  );
-});
-
-export default function register(){
-  server.use('/users/register', router);
-};
+export default function register() {
+  server.use("/users/register", router);
+}

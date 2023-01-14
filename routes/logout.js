@@ -1,4 +1,4 @@
-import express from 'express';
+import express from "express";
 
 const server = express();
 const router = express.Router();
@@ -16,6 +16,6 @@ function checkAuthenticated(req, res, next) {
   next();
 }
 
-export default function logout(){
-  server.use('logout', router);
-};
+export default function logout() {
+  server.use("/users/logout", router);
+}
