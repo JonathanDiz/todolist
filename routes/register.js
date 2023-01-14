@@ -2,13 +2,13 @@ import fs from "fs";
 import bcrypt from "bcrypt";
 import { pool } from "../dbConfig.js";
 import express from "express";
+import path from "path";
 
-const server = express();
+const viewsDir = path.relative(process.cwd(), path.join(path.dirname(new URL(import.meta.url).pathname), 'views'));
 const router = express.Router();
 
 router.get("/users/register", (req, res) => {
-  const dir = "../views";
-  fs.readdir(dir, (err, files) => {
+  fs.readdir(viewsDir, (err, files) => {
     if (err) {
       console.error("No se pudo leer el directorio: ", err);
       return res
@@ -59,6 +59,6 @@ router.post("/users/register", async (req, res) => {
   }
 });
 
-export default function register() {
-  server.use("/users/register", router);
+export default function register(app) {
+  app.use("/users/register", router);
 }

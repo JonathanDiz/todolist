@@ -1,12 +1,12 @@
 import fs from 'fs';
 import express from 'express';
+import path from "path";
 
-
+const viewsDir = path.relative(process.cwd(), path.join(path.dirname(new URL(import.meta.url).pathname), 'views'));
 const router = express.Router();
 
 router.get("/", (req, res) => {
-  const dir = path.join(__dirname, '..', 'views');
-  fs.readdir(dir, (err, files) => {
+  fs.readdir(viewsDir, (err, files) => {
     if (err) {
       console.error("No se pudo leer el directorio: ", err);
       return res

@@ -63,12 +63,19 @@ import logout from "./routes/logout.js";
 import register from "./routes/register.js";
 import view from "./routes/view.js";
 
-dashboard(router, passport);
+view(router);
 index(router);
 login(router, passport);
+register(router, passport);
+dashboard(router, passport);
 logout(router);
-register(router);
-view(router);
+
+server.use("view/:file", router);
+server.use("/", router);
+server.use("/users/login", router, passport.authenticate);
+server.use("/users/register", router, passport.authenticate);
+server.use("/dashboard", router, passport.authenticate);
+server.use("/users/logout", router);
 
 app.prepare().then(() => {
   server.get("/p/:id", (req, res) => {

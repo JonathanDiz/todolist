@@ -1,6 +1,5 @@
 import express from "express";
 
-const server = express();
 const router = express.Router();
 
 router.get("/users/logout", checkAuthenticated, (req, res) => {
@@ -16,6 +15,6 @@ function checkAuthenticated(req, res, next) {
   next();
 }
 
-export default function logout() {
-  server.use("/users/logout", router);
+export default function logout(app) {
+  app.use("/users/logout", router);
 }

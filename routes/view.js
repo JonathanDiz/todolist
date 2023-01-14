@@ -1,12 +1,12 @@
 import fs from "fs";
 import express from "express";
+import path from "path";
 
-const server = express();
+const viewsDir = path.relative(process.cwd(), path.join(path.dirname(new URL(import.meta.url).pathname), 'views'));
 const router = express.Router();
 
 router.get("/view/:file", (req, res) => {
-  const file = ` ../views/${req.params.file}`;
-  fs.readFile(file, "utf8", (err, data) => {
+  fs.readFile(viewsDir, file, "utf8", (err, data) => {
     if (err) {
       console.error("No se pudo leer el archivo: ", err);
       return res
@@ -17,6 +17,6 @@ router.get("/view/:file", (req, res) => {
   });
 });
 
-export default function view() {
-  server.use("/view", router);
+export default function view(app) {
+  app.use("/view", router);
 }
